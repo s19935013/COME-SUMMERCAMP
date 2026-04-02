@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 夏凱納青年營會 Come HOME</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.344.0?bundle"
+      }
+    }
+    </script>
+    
+    <script src="https://unpkg.com/@babel/standalone@7.23.10/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', 'Noto Serif TC', sans-serif; background-color: #151515; color: #F8FAFC; margin: 0; }
+        .font-serif { font-family: 'Noto Serif TC', serif; }
+        ::-webkit-scrollbar { display: none; }
+        .glass-card { background: rgba(26, 26, 26, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(234, 224, 200, 0.1); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module">
+        import React, { useState, useEffect, memo } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { 
+            ChevronRight, ArrowLeft, Rocket, Flame, Calendar, MapPin, 
+            Gift, CheckCircle, ExternalLink, Download, Phone, ImageIcon, 
+            Quote, Smartphone
+        } from 'lucide-react';
+
+        const CONFIG = {
+            REGISTRATION_URL: "https://crm-shekinahch.org/",
+            CONSENT_FORM_URL: "https://drive.google.com/drive/folders/1hM6PCG-cXPc_XLUCXOGsHWYKn5kW76DT",
+            POSTER_URL: {
+                jh: "", 
+                sh: ""  
+            },
+            CONTACTS: {
+                JH: { name: "林思吟 區長", phone: "0923-801-201" },
+                SH: { name: "郭奕君 區長", phone: "0983-334-469" }
+            },
+            SCHEDULES: {
+                jh: [
+                    { time: "09:00", d1: "報到啟動", d2: "報到啟動" },
+                    { time: "10:00", d1: "體驗活動 / 趣味查經", d2: "體驗活動 / 趣味查經" },
+                    { time: "12:00", d1: "午餐與午休", d2: "午餐與午休" },
+                    { time: "13:30", d1: "工作坊 (一)", d2: "工作坊 (三)" },
+                    { time: "15:30", d1: "工作坊 (二)", d2: "閉幕慶典" },
+                    { time: "19:00", d1: "晚會：遇見愛 ✨", d2: "回家囉！" }
+                ],
+                sh: [
+                    { time: "09:00", d1: "報到", d2: "晨更時光", d3: "收穫分享" },
+                    { time: "10:30", d1: "破冰任務", d2: "低空探索體驗", d3: "新生的盼望" },
+                    { time: "12:00", d1: "午餐時間", d2: "午餐時間", d3: "午餐時間" },
+                    { time: "14:00", d1: "小組時光", d2: "孤單退散 (主題)", d3: "回家 (閉幕)" },
+                    { time: "18:00", d1: "星空夜語", d2: "營火晚會 🔥", d3: "期待再見" }
+                ]
+            },
+            TESTIMONIALS: {
+                jh: [
+                    { name: "小明", content: "原本以為查經很無聊，沒想到這兩天玩得超瘋，還交到很多好朋友！" },
+                    { name: "家長 林媽媽", content: "孩子回來後變得很主動分享，看見他在團體中被接納真的很感動。" }
+                ],
+                sh: [
+                    { name: "阿強", content: "星空夜語那一晚，我第一次把心裡的壓力說出來，感覺這裡真的是我的家。" },
+                    { name: "恩妤", content: "低空體驗讓我發現，原來我不必一個人硬撐，團隊和上帝一直都在。" }
+                ]
+            },
+            MOMENTS: [
+                { label: "熱血敬拜", imageUrl: "" }, 
+                { label: "團隊挑戰", imageUrl: "" }, 
+                { label: "溫馨談心", imageUrl: "" }, 
+                { label: "歡樂烤肉", imageUrl: "" }
+            ],
+            APP_STEPS: [
+                { step: '01', text: '選擇訪客登入 (或使用會友帳號)', imageUrl: "" },
+                { step: '02', text: '於活動資訊欄，選擇 "兒青" 分類', imageUrl: "" },
+                { step: '03', text: '點選 "C-COME 暑期青年營會"', imageUrl: "" },
+                { step: '04', text: '依序填寫資料 (無牧區請選新朋友選項)', imageUrl: "" },
+                { step: '05', text: '送出表單，於活動狀態中找到票卷', imageUrl: "" },
+                { step: '06', text: '票卷最下方即為「專屬虛擬帳號」，匯款即完成！', imageUrl: "" }
+            ]
+        };
+
+        const Background = memo(() => (
+            <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+                <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#D46C4E]/10 rounded-full blur-[120px] animate-pulse" />
+                <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#847395]/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+            </div>
+        ));
+
+        const ScheduleTable = memo(({ type }) => {
+            const isJH = type === 'jh';
+            const data = CONFIG.SCHEDULES[type];
+            const accentColor = isJH ? 'text-[#D46C4E]' : 'text-[#847395]';
+
+            return (
+                <div className="overflow-x-auto rounded-3xl glass-card border border-white/10 shadow-2xl">
+                    <table className="w-full text-left border-collapse min-w-[600px]">
+                        <thead>
+                            <tr className="bg-white/5 uppercase text-[10px] tracking-widest font-black">
+                                <th className="p-5 border-b border-white/10 text-gray-400">Time</th>
+                                <th className={`p-5 border-b border-white/10 ${accentColor}`}>Day 1</th>
+                                <th className={`p-5 border-b border-white/10 ${accentColor}`}>Day 2</th>
+                                {!isJH && <th className={`p-5 border-b border-white/10 ${accentColor}`}>Day 3</th>}
+                            </tr>
+                        </thead>
+                        <tbody className="text-sm font-bold text-gray-200">
+                            {data.map((row, i) => (
+                                <tr key={i} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                    <td className="p-5 font-mono opacity-50 text-[#EAE0C8]">{row.time}</td>
+                                    <td className="p-5">{row.d1}</td>
+                                    <td className="p-5">{row.d2}</td>
+                                    {!isJH && <td className="p-5">{row.d3}</td>}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        });
+
+        const InfoCard = memo(({ icon: Icon, label, value, subValue, refundNotice, colorClass }) => (
+            <div className="flex items-start group">
+                <Icon className={`${colorClass} w-6 h-6 mr-5 flex-shrink-0 transition-transform group-hover:scale-110`} />
+                <div>
+                    <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1">{label}</p>
+                    <p className="text-lg font-bold tracking-tight text-white">{value}</p>
+                    {refundNotice && <p className="text-xs text-[#EAE0C8] mt-1 font-bold italic tracking-tight underline decoration-wavy decoration-white/40 underline-offset-4 uppercase">{refundNotice}</p>}
+                    {subValue && <p className="text-gray-400 italic text-sm opacity-80 mt-1">{subValue}</p>}
+                </div>
+            </div>
+        ));
+
+        const MomentCard = memo(({ label, imageUrl }) => (
+            <div className="aspect-square bg-gray-900 border border-gray-800 rounded-2xl flex flex-col items-center justify-center group hover:border-[#EAE0C8] transition-all relative overflow-hidden">
+                {imageUrl ? (
+                    <img src={imageUrl} alt={label} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-500 group-hover:scale-110" />
+                ) : (
+                    <ImageIcon className="w-8 h-8 mb-2 opacity-20 group-hover:opacity-100 group-hover:text-[#EAE0C8] transition-all relative z-10" />
+                )}
+                <span className="relative z-10 text-[10px] font-bold opacity-70 group-hover:opacity-100 transition-all uppercase bg-black/60 px-3 py-1 rounded-full">{label}</span>
+            </div>
+        ));
+
+        const TestimonialCard = memo(({ name, content }) => (
+            <div className="bg-gray-900/50 p-8 rounded-2xl relative border-l-4 border-[#EAE0C8] shadow-lg">
+                <Quote className="absolute top-4 right-6 w-8 h-8 opacity-10 text-[#EAE0C8]" />
+                <p className="text-gray-300 italic text-base leading-relaxed mb-6">「{content}」</p>
+                <p className="text-[#EAE0C8] font-bold">— {name}</p>
+            </div>
+        ));
+
+        const StepCard = memo(({ step, text, imageUrl }) => (
+            <div className="flex flex-col gap-5 group">
+                <div className="flex items-center gap-6">
+                    <span className="text-5xl md:text-6xl font-black text-gray-800 group-hover:text-[#EAE0C8] transition-colors font-serif italic select-none leading-none">{step}</span>
+                    <p className="text-base md:text-lg text-gray-300 font-bold leading-snug tracking-tight italic">{text}</p>
+                </div>
+                <div className="w-full h-40 bg-black/50 rounded-3xl border border-dashed border-gray-800 flex flex-col items-center justify-center text-gray-700 transition-all hover:bg-black/70 group-hover:border-[#EAE0C8]/20 relative overflow-hidden">
+                    {imageUrl ? (
+                        <img src={imageUrl} alt={`Step ${step}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ) : (
+                        <React.Fragment>
+                            <Smartphone className="w-6 h-6 mb-2 opacity-10" />
+                            <span className="text-[10px] font-bold opacity-20 tracking-[0.3em] uppercase">[ 步驟 {step} 示意圖 ]</span>
+                        </React.Fragment>
+                    )}
+                </div>
+            </div>
+        ));
+
+        const HomeView = memo(({ onNavigate }) => (
+            <div className="min-h-screen flex flex-col items-center justify-center px-6 py-20 relative z-10">
+                <header className="text-center mb-16">
+                    <p className="font-serif italic text-[#EAE0C8] tracking-[0.4em] text-sm mb-4 uppercase opacity-70">God sets the lonely in families.</p>
+                    <h1 className="text-[7.5rem] md:text-[12rem] font-serif font-bold italic text-[#EAE0C8] leading-none tracking-tighter drop-shadow-2xl">COME</h1>
+                    <p className="text-xl md:text-2xl font-bold uppercase tracking-[0.6em] text-white/80 italic mt-4">summer camp</p>
+                </header>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+                    <button onClick={() => onNavigate('jh')} className="glass-card group p-10 rounded-[3rem] text-left hover:border-[#D46C4E]/60 transition-all flex flex-col justify-between h-80 shadow-xl relative overflow-hidden">
+                        <Rocket className="text-[#D46C4E] w-12 h-12 transition-transform group-hover:-translate-y-2 group-hover:translate-x-2 relative z-10" />
+                        <div className="relative z-10">
+                            <h3 className="text-4xl font-black font-serif italic mb-2 text-white">國中場</h3>
+                            <p className="text-gray-400 italic">升國一到國三 ｜ 玩出卓越成長力！</p>
+                        </div>
+                    </button>
+                    <button onClick={() => onNavigate('sh')} className="glass-card group p-10 rounded-[3rem] text-left hover:border-[#847395]/60 transition-all flex flex-col justify-between h-80 shadow-xl relative overflow-hidden">
+                        <Flame className="text-[#847395] w-12 h-12 transition-transform group-hover:-translate-y-2 group-hover:translate-x-2 relative z-10" />
+                        <div className="relative z-10">
+                            <h3 className="text-4xl font-black font-serif italic mb-2 text-white">高中場</h3>
+                            <p className="text-gray-400 italic">升高一至高三 ｜ 找回真實自我與歸屬。</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        ));
+
+        const HeroHeader = memo(({ isJH, theme, posterUrl }) => (
+            <section className="relative w-full aspect-[4/3] md:aspect-[21/9] flex items-center justify-center rounded-[3rem] overflow-hidden shadow-2xl group border border-white/10 mt-8 mb-16">
+                {posterUrl ? (
+                    <img src={posterUrl} alt="營會主視覺" className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 z-0" />
+                ) : (
+                    <div className="absolute inset-0 bg-gray-900/80 flex flex-col items-center justify-center z-0">
+                        <ImageIcon className="w-16 h-16 mb-4 opacity-20 text-[#EAE0C8]" />
+                        <span className="text-xs font-bold opacity-30 tracking-[0.3em] uppercase text-[#EAE0C8]">[ 預留主視覺海報 (POSTER_URL) ]</span>
+                    </div>
+                )}
+                
+                <div className="absolute inset-0 bg-gradient-to-t from-[#151515] via-[#151515]/60 to-black/30 z-0 pointer-events-none"></div>
+
+                <div className="relative z-10 text-center space-y-6 px-6 w-full flex flex-col items-center justify-center h-full pt-12 md:pt-0">
+                    <div className={`inline-block px-4 py-1 rounded-full border ${theme.border} ${theme.accent} text-[10px] font-black tracking-widest uppercase bg-black/50 backdrop-blur-sm`}>
+                        {isJH ? 'Junior High' : 'Senior High'}
+                    </div>
+                    <h2 className="text-7xl md:text-9xl font-black italic font-serif leading-none tracking-tighter text-white drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
+                        {isJH ? '國中場' : '高中場'}
+                    </h2>
+                    <p className={`text-xl md:text-3xl font-black italic ${theme.accent} drop-shadow-[0_2px_10px_rgba(0,0,0,1)]`}>
+                        {isJH ? '玩出卓越成長力！' : '找回真實自我與歸屬。'}
+                    </p>
+                </div>
+            </section>
+        ));
+
+        const DetailView = memo(({ type, onBack }) => {
+            const isJH = type === 'jh';
+            const theme = isJH 
+                ? { accent: 'text-[#D46C4E]', bg: 'bg-[#D46C4E]', border: 'border-[#D46C4E]', contact: CONFIG.CONTACTS.JH }
+                : { accent: 'text-[#847395]', bg: 'bg-[#847395]', border: 'border-[#847395]', contact: CONFIG.CONTACTS.SH };
+            const posterUrl = CONFIG.POSTER_URL[type];
+
+            useEffect(() => {
+                window.scrollTo(0, 0);
+            }, [type]);
+
+            return (
+                <div className="min-h-screen pb-32 relative z-10">
+                    <nav className="sticky top-0 z-50 glass-card px-6 py-4 flex justify-between items-center border-x-0 border-t-0 shadow-lg">
+                        <button onClick={onBack} className="flex items-center text-gray-400 hover:text-white transition-colors font-bold text-sm">
+                            <ArrowLeft className="mr-2 w-4 h-4" /> 返回首頁
+                        </button>
+                        <span className="font-serif italic text-[#EAE0C8] tracking-tighter uppercase font-black">Come HOME</span>
+                    </nav>
+
+                    <main className="max-w-5xl mx-auto px-6 space-y-24">
+                        
+                        <HeroHeader isJH={isJH} theme={theme} posterUrl={posterUrl} />
+
+                        <section className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div className="glass-card p-10 rounded-[2.5rem] space-y-10 shadow-xl">
+                                <h3 className="text-xl font-black font-serif italic border-l-4 border-[#EAE0C8] pl-5 uppercase text-white">活動資訊</h3>
+                                <div className="space-y-8">
+                                    <InfoCard 
+                                        icon={Calendar} 
+                                        label="Time 時間" 
+                                        value={isJH ? "7/01(三) - 7/02(四)" : "7/01(三) - 7/03(五)"} 
+                                        subValue={isJH ? "09:00-20:00 (不過夜)" : "三天兩夜 (過夜營會)"}
+                                        colorClass={theme.accent}
+                                    />
+                                    <InfoCard 
+                                        icon={MapPin} 
+                                        label="Location 地點" 
+                                        value={isJH ? "夏凱納 1F 副堂" : "陽明山衛理福音園"} 
+                                        colorClass={theme.accent}
+                                    />
+                                    <InfoCard 
+                                        icon={Gift} 
+                                        label="Fee 優惠價 & 退費機制" 
+                                        value={isJH ? "新朋友 500 元" : "新朋友 1000 元"} 
+                                        refundNotice={!isJH ? "全程參與退 500 元保證金" : null}
+                                        subValue="※新朋友定義：參與本單位活動 3 次以內者"
+                                        colorClass={theme.accent}
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-8">
+                                <div className={`p-10 rounded-[2.5rem] ${theme.bg} text-[#151515] flex flex-col justify-center shadow-xl`}>
+                                    <h4 className="text-xs font-black uppercase opacity-60 mb-2">Target 對象</h4>
+                                    <p className="text-3xl font-black tracking-tighter">{isJH ? '升國一至國三' : '升高一至高三/五專'}</p>
+                                </div>
+                                <div className="glass-card p-10 rounded-[2.5rem] shadow-xl">
+                                    <h4 className="text-xs font-black uppercase text-[#EAE0C8] opacity-60 mb-6 tracking-widest">Highlights 特色亮點</h4>
+                                    <ul className="space-y-4 font-bold italic text-white">
+                                        {(isJH ? ['體驗活動', '趣味查經', '專屬工作坊'] : ['低空教育探索', '星空營火晚會', '自我身份追尋']).map(t => (
+                                            <li key={t} className="flex items-center gap-3">
+                                                <CheckCircle className={`w-5 h-5 ${theme.accent}`} /> {t}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section className="space-y-10">
+                            <h3 className="text-3xl font-black font-serif italic text-center uppercase tracking-widest text-[#EAE0C8]">營會精彩剪影</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {CONFIG.MOMENTS.map((m, i) => <MomentCard key={i} label={m.label} imageUrl={m.imageUrl} />)}
+                            </div>
+                        </section>
+
+                        <section className="space-y-10">
+                            <h3 className="text-3xl font-black font-serif italic text-center uppercase tracking-widest text-[#EAE0C8]">學員見證分享</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {CONFIG.TESTIMONIALS[type].map((t, i) => (
+                                    <TestimonialCard key={i} name={t.name} content={t.content} />
+                                ))}
+                            </div>
+                        </section>
+
+                        <section className="space-y-10">
+                            <h3 className="text-3xl font-black font-serif italic text-center uppercase tracking-widest text-[#EAE0C8]">營會行程表</h3>
+                            <ScheduleTable type={type} />
+                        </section>
+
+                        <section className="glass-card p-10 md:p-14 rounded-[3.5rem] shadow-2xl relative overflow-hidden border-white/10">
+                            <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none rotate-12">
+                                <Smartphone className="w-64 h-64" />
+                            </div>
+                            <h3 className="text-3xl md:text-5xl font-black font-serif italic mb-12 text-white relative z-10">Registration Guide<br/><span className="text-xl md:text-2xl text-gray-400 tracking-widest uppercase">APP 報名步驟說明</span></h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12 relative z-10">
+                                {CONFIG.APP_STEPS.map((s, i) => (
+                                    <StepCard key={i} step={s.step} text={s.text} imageUrl={s.imageUrl} />
+                                ))}
+                            </div>
+                        </section>
+
+                        <section className="glass-card p-12 rounded-[3.5rem] text-center space-y-10 shadow-2xl border-white/20 bg-gradient-to-b from-transparent to-black/40">
+                            <h3 className="text-4xl md:text-6xl font-black italic font-serif leading-tight text-white">Ready to Come HOME?</h3>
+                            <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
+                                <a href={CONFIG.REGISTRATION_URL} target="_blank" rel="noreferrer" className={`${theme.bg} text-[#151515] px-12 py-6 rounded-2xl font-black text-xl hover:scale-105 transition-transform flex items-center gap-3 italic uppercase`}>
+                                    立即前往報名 <ExternalLink className="w-6 h-6" />
+                                </a>
+                                <a href={CONFIG.CONSENT_FORM_URL} target="_blank" rel="noreferrer" className="border-2 border-white/20 text-white px-10 py-6 rounded-2xl font-black text-xl hover:bg-white/10 transition-colors flex items-center gap-3 italic uppercase">
+                                    下載家長同意書 <Download className="w-6 h-6" />
+                                </a>
+                            </div>
+                        </section>
+
+                        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-white/10 pt-16">
+                            <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-4">
+                                <p className="text-[#EAE0C8] font-black text-[10px] tracking-widest uppercase opacity-60">聯絡窗口</p>
+                                <div className="flex items-center gap-6 group">
+                                    <div className={`w-16 h-16 ${theme.bg} rounded-2xl flex items-center justify-center text-[#151515] group-hover:scale-110 transition-transform`}>
+                                        <Phone className="w-8 h-8" />
+                                    </div>
+                                    <div>
+                                        <h5 className="text-2xl font-black font-serif italic text-white">{theme.contact.name}</h5>
+                                        <p className="text-xl font-mono text-gray-400 group-hover:text-white transition-colors">{theme.contact.phone}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </main>
+
+                    <div className="fixed bottom-8 left-6 right-6 z-50 md:hidden">
+                        <a href={CONFIG.REGISTRATION_URL} target="_blank" rel="noreferrer" className={`${theme.bg} text-[#151515] w-full py-6 rounded-[2rem] font-black text-xl flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,0,0,0.8)] active:scale-95 transition-transform italic uppercase`}>
+                            立即報名 <ChevronRight className="w-6 h-6" />
+                        </a>
+                    </div>
+                </div>
+            );
+        });
+
+        const App = () => {
+            const [view, setView] = useState('home');
+
+            return (
+                <div className="min-h-screen selection:bg-[#EAE0C8] selection:text-[#151515]">
+                    <Background />
+                    {view === 'home' ? (
+                        <HomeView onNavigate={setView} />
+                    ) : (
+                        <DetailView type={view} onBack={() => setView('home')} />
+                    )}
+                </div>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
