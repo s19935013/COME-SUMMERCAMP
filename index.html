@@ -56,8 +56,8 @@
                     { time: "10:00", d1: "體驗活動 / 趣味查經", d2: "體驗活動 / 趣味查經" },
                     { time: "12:00", d1: "午餐與午休", d2: "午餐與午休" },
                     { time: "13:30", d1: "工作坊 (一)", d2: "工作坊 (三)" },
-                    { time: "15:30", d1: "工作坊 (二)", d2: "閉幕慶典" },
-                    { time: "19:00", d1: "晚會：遇見愛 ✨", d2: "回家囉！" }
+                    { time: "15:30", d1: "工作坊 (二)", d2: "工作坊 (四)" },
+                    { time: "19:00", d1: "晚會1 ✨", d2: "晚會2 ✨" }
                 ],
                 sh: [
                     { time: "09:00", d1: "報到", d2: "低空探索體驗", d3: "主題：新生的盼望" },
@@ -168,9 +168,11 @@
                     <span className="text-5xl md:text-6xl font-black text-gray-800 group-hover:text-[#EAE0C8] transition-colors font-serif italic select-none leading-none">{step}</span>
                     <p className="text-base md:text-lg text-gray-300 font-bold leading-snug tracking-tight italic">{text}</p>
                 </div>
-                <div className="w-full h-40 bg-black/50 rounded-3xl border border-dashed border-gray-800 flex flex-col items-center justify-center text-gray-700 transition-all hover:bg-black/70 group-hover:border-[#EAE0C8]/20 relative overflow-hidden">
+                <div className="w-full h-48 bg-black/50 rounded-3xl border border-dashed border-gray-800 flex flex-col items-center justify-center text-gray-700 transition-all hover:bg-black/70 group-hover:border-[#EAE0C8]/20 relative overflow-hidden">
                     {imageUrl ? (
-                        <img src={imageUrl} alt={`Step ${step}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <img src={imageUrl} alt={`Step ${step}`} className="absolute inset-0 w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500" 
+                     style={{ filter: "contrast(1.05) drop-shadow(0 10px 15px rgba(0,0,0,0.6))" }}
+                    />
                     ) : (
                         <React.Fragment>
                             <Smartphone className="w-6 h-6 mb-2 opacity-10" />
