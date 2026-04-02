@@ -183,23 +183,40 @@
             </div>
         ));
 
-        const HomeView = memo(({ onNavigate }) => (
+       const HomeView = memo(({ onNavigate }) => (
             <div className="min-h-screen flex flex-col items-center justify-center px-6 py-20 relative z-10">
-                <header className="text-center mb-16">
+                {/* 標題區塊：稍微縮小了下方的 margin (mb-12)，讓畫面更緊湊 */}
+                <header className="text-center mb-12">
                     <p className="font-serif italic text-[#EAE0C8] tracking-[0.4em] text-sm mb-4 uppercase opacity-70">God sets the lonely in families.</p>
                     <h1 className="text-[7.5rem] md:text-[12rem] font-serif font-bold italic text-[#EAE0C8] leading-none tracking-tighter drop-shadow-2xl">COME</h1>
                     <p className="text-xl md:text-2xl font-bold uppercase tracking-[0.6em] text-white/80 italic mt-4">summer camp</p>
                 </header>
 
+                {/* 👇👇👇 新增的超 Vibe 首頁形象圖區塊 👇👇👇 */}
+                <div className="w-full max-w-4xl aspect-[21/9] md:aspect-[3/1] rounded-[3rem] overflow-hidden mb-12 relative group shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10">
+                    <img 
+                        src="https://raw.githubusercontent.com//s19935013/COME-SUMMERCAMP/450edba2a784b0ab9cd7a772c977fd4554cda7f0/images/picture/homepage.png" 
+                        alt="Come Home 營會意象" 
+                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+                        style={{ filter: "brightness(0.8) contrast(1.1) saturate(1.2)" }}
+                    />
+                    {/* 滑鼠移過去會浮現的隱藏文字彩蛋 */}
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 backdrop-blur-sm">
+                        <p className="text-[#EAE0C8] font-serif italic text-2xl md:text-3xl font-black tracking-[0.3em] drop-shadow-2xl">歡迎回家。</p>
+                    </div>
+                </div>
+                {/* 👆👆👆 新增結束 👆👆👆 */}
+
+                {/* 報名入口區塊：升級了 hover 狀態的背景微光特效 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
-                    <button onClick={() => onNavigate('jh')} className="glass-card group p-10 rounded-[3rem] text-left hover:border-[#D46C4E]/60 transition-all flex flex-col justify-between h-80 shadow-xl relative overflow-hidden">
+                    <button onClick={() => onNavigate('jh')} className="glass-card group p-10 rounded-[3rem] text-left hover:border-[#D46C4E]/80 hover:bg-[#D46C4E]/10 transition-all flex flex-col justify-between h-80 shadow-xl relative overflow-hidden">
                         <Rocket className="text-[#D46C4E] w-12 h-12 transition-transform group-hover:-translate-y-2 group-hover:translate-x-2 relative z-10" />
                         <div className="relative z-10">
                             <h3 className="text-4xl font-black font-serif italic mb-2 text-white">國中場</h3>
                             <p className="text-gray-400 italic">升國一到國三 ｜ 玩出卓越成長力！</p>
                         </div>
                     </button>
-                    <button onClick={() => onNavigate('sh')} className="glass-card group p-10 rounded-[3rem] text-left hover:border-[#847395]/60 transition-all flex flex-col justify-between h-80 shadow-xl relative overflow-hidden">
+                    <button onClick={() => onNavigate('sh')} className="glass-card group p-10 rounded-[3rem] text-left hover:border-[#847395]/80 hover:bg-[#847395]/10 transition-all flex flex-col justify-between h-80 shadow-xl relative overflow-hidden">
                         <Flame className="text-[#847395] w-12 h-12 transition-transform group-hover:-translate-y-2 group-hover:translate-x-2 relative z-10" />
                         <div className="relative z-10">
                             <h3 className="text-4xl font-black font-serif italic mb-2 text-white">高中場</h3>
