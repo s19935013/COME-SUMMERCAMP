@@ -293,6 +293,8 @@
                                         icon={MapPin} 
                                         label="Location 地點" 
                                         value={isJH ? "夏凱納 1F 副堂" : "陽明山衛理福音園"} 
+                                        /* 👇👇 增加這行 subValue，放進地址與交通提示 👇👇 */
+                                        subValue={isJH ? "植福路170號, 近捷運劍南路站" : "仰德大道二段200號, 近公車陽明教養院站"}
                                         colorClass={theme.accent}
                                     />
                                     <InfoCard 
